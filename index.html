@@ -1,0 +1,49 @@
+<!--	
+		Created by Brendon Albertson
+		albertsonbrendon@gmail.com
+-->
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Library App</title>
+	<meta name="description" content="">
+	<meta name="author" content="Brendon Albertson">
+
+	<link rel="stylesheet" type="text/css" href="styles.css">
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</head>
+	
+<body>
+
+	<h1 id='title'>Library App</h1>
+	<h2>Created by <a href="https://www.brendonalbertson.com">Brendon Albertson</a></h2>
+
+	
+
+	<div id="new-book-form-container">
+		<form id="new-book-form">
+			<label for="title-input">Title</label>
+			<input type="text" id="title-input" name="title" placeholder="Title">
+			<label for="author-input">Author</label>
+			<input type="text" id="author-input" name="author" placeholder="Author">
+			<label for="year-input">Year published</label>
+			<input type="text" id="year-input" name="year" placeholder="Year published">
+			<div> <button id="submit-button" type="button" onclick="addBook()">Add book</button></div>
+		</form>
+
+	</div>
+
+
+	<div id="library"></div>
+
+
+	<script src="index.js"></script>
+
+</body>
