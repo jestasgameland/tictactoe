@@ -1,127 +1,222 @@
-// Book constructor function:
-
-const Book = function(title, author, year, read, bookId) {
-
-	this.title = title;
-	this.author = author;
-	this.year = year;
-	this.read = read;
-	this.bookId = bookId;
-}
-
-let library = [];
-const libraryDiv = document.getElementById("library");
 
 
 
 
-// Add books:
 
-function addBook() {
-
-	let title = document.getElementById('title-input').value;
-	let author = document.getElementById('author-input').value;
-	let year = document.getElementById('year-input').value;
-
-	let newBook = new Book(title, author, year, false, library.length+1);
-	library.push(newBook);
-
-	makeBookDiv(newBook);
-
-	refreshScreen();
-
-}
+const createGameBoard = (function() {
 
 
-// User interface / display:
+	function createRow(rowCoord) {
 
+		let row = document.createElement('div');
+		row.className = 'row';
+		row.id = 'row-' + rowCoord;
 
-function makeBookDiv(book) {
-
-	let bookDiv = document.createElement('div');
-	bookDiv.className = 'book-div';
-	bookDiv.setAttribute('data-bookId', book.bookId); // this will be index of book in library array
-	bookDiv.innerHTML += "<p>Title: " + book.title + "</p>";
-	bookDiv.innerHTML += "<p>Author: " + book.author + "</p>";
-	bookDiv.innerHTML += "<p>Year: " + book.year + "</p>";
-
-	let readButton = document.createElement('div');
-	readButton.addEventListener('click', readBook);
-
-	if (!book.read) {
-		readButton.innerHTML = "Not read";
-		readButton.className = "read-button unread";
-	}
-	else {
-		readButton.innerHTML = "Read &#10004;";
-		readButton.className = "read-button read";
-	};
-	
-	bookDiv.appendChild(readButton);
-
-	let deleteButton = document.createElement('div');
-	deleteButton.addEventListener('click', deleteBook);
-	deleteButton.innerHTML = "x"
-	deleteButton.className = 'delete-button';
-	bookDiv.appendChild(deleteButton);
-
-	libraryDiv.appendChild(bookDiv);
-
-}
-
-function refreshScreen() {
-
-	libraryDiv.innerHTML = '';
-
-	for (i=0; i<library.length; i++) {
-		makeBookDiv(library[i])
-	}
-}
-
-function deleteBook() {
-
-	let bookToDelete = this.parentElement;
-
-//remove from library array
-	library = library.filter( function(book) {
-		return book.bookId != bookToDelete.getAttribute('data-bookId');
-	})
-
-//remove div from DOM
-//	libraryDiv.removeChild(this.parentElement);
-
-	refreshScreen();
-
-}
-
-
-function readBook() {
-
-	let thisBook = this.parentElement;
-
-//FIND the book object in library array
-	let targetBook = library.find( function(book) {
-		return book.bookId == thisBook.getAttribute('data-bookId')
-	})  
-
-//change read status
-	if (!targetBook.read) {
-		library[library.indexOf(targetBook)].read = true;
-	//	this.style.backgroundColor = "lightgreen";
-	//	this.innerHTML = "Read &#10004;";
-	}
-	else {
-		library[library.indexOf(targetBook)].read = false;
-	//	this.style.backgroundColor = "honeydew";
-	//	this.innerHTML = "Not read";
+		for (j=0; j<3; j++) {  //create 3 square in each row
+			row.appendChild( createSquare(rowCoord, j) )    // creates square at coordinates
+		}
+		
+		return row;
 	}
 
-	refreshScreen();
+	function createSquare(row, col) {
+
+		let square = document.createElement('div');
+		square.className = 'square';
+		square.id = row+'-'+col; //coordinates
+		square.setAttribute('data-row', row);
+		square.setAttribute('data-col', col);
+		square.addEventListener('click', function() {
+
+			currentPlayer.placeMark(this)
+
+		});
+
+		return square;
+		
+	}
+
+
+	//Finally, create 3 rows:
+	for (i=0; i<3; i++) {
+		document.getElementById('gameboard').appendChild(createRow(i))
+	}
+
+	//Good: Can't create rows or squares outsite of this module, because they are private methods.
+
+})();
+
+
+
+
+
+
+
+const Player = (mark, myTurn) => {
+
+	const placeMark = (whichSquare) => {
+
+		turnsTaken++;
+
+		if (whichSquare.innerHTML == '') {
+
+			whichSquare.innerHTML = mark;
+
+			if (currentPlayer == playerOne) {
+				currentPlayer = playerTwo;
+			}
+			else {currentPlayer = playerOne}
+		}
+
+
+
+		// update the matrix:
+
+		var row = whichSquare.getAttribute('data-row')
+		var col = whichSquare.getAttribute('data-col')
+
+		board.boardMatrix[row][col] = mark;
+
+		checkWin(mark);
+
+
+	}
+
+	const checkWin = (mark) => {
+
+		const win = () => {
+			alert(mark + " wins!")
+		}
+
+		const gameOver = () => {
+			alert("Game over.  You're both losers!")
+		}
+
+		var [row1, row2, row3] = board.boardMatrix;  //create 3 separate variables for rows
+
+		//horizontal 3-in-a-row:
+
+		if (board.boardMatrix[0][0] == mark &&
+			  board.boardMatrix[0][1] == mark &&
+			  board.boardMatrix[0][2] == mark) {
+			win(); 
+			return;
+		}
+
+		
+		else if (board.boardMatrix[1][0] == mark &&
+			  board.boardMatrix[1][1] == mark &&
+			  board.boardMatrix[1][2] == mark) {
+			win(); 
+			return;
+		}
+
+		else if (board.boardMatrix[2][0] == mark &&
+			  board.boardMatrix[2][1] == mark &&
+			  board.boardMatrix[2][2] == mark) {
+			win(); 
+			return;
+		}
+
+
+
+		//vertical 3-in-a-row:
+		
+		else if (board.boardMatrix[0][0] == mark &&
+			  board.boardMatrix[1][0] == mark &&
+			  board.boardMatrix[2][0] == mark) {
+			win(); 
+			return;
+		}
+
+		else if (board.boardMatrix[0][1] == mark &&
+			  board.boardMatrix[1][1] == mark &&
+			  board.boardMatrix[2][1] == mark) {
+			win(); 
+			return;
+		}
+
+		else if (board.boardMatrix[0][2] == mark &&
+			  board.boardMatrix[1][2] == mark &&
+			  board.boardMatrix[2][2] == mark) {
+			win(); 
+			return;
+		}
+
+
+
+		//diagonals:
+
+		else if (board.boardMatrix[0][0] == mark &&
+			  board.boardMatrix[1][1] == mark &&
+			  board.boardMatrix[2][2] == mark) {
+			win(); 
+			return;
+		}
+
+		else if (board.boardMatrix[0][2] == mark &&
+			  board.boardMatrix[1][1] == mark &&
+			  board.boardMatrix[2][0] == mark) {
+			win(); 
+			return;
+		}
+
+		else {
+			if (turnsTaken == 9) {
+				gameOver();
+			}
+		};
+
+
+	}
+//////////////____________________
+
+	return {placeMark}
 
 }
 
 
-//submit books with Enter key
-document.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) { addBook() }
-});
+
+function MakeGameBoard() {
+
+	this.boardMatrix = [
+
+		['','',''],
+		['','',''],
+		['','','']
+
+	];
+
+}
+
+const board = new MakeGameBoard();
+
+var turnsTaken = 0;
+
+
+
+// DEFAULTS:
+const playerOne = Player("X", true);
+const playerTwo = Player("O", false);
+var currentPlayer = playerOne;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,4 @@
-html, body {
-    font-size: 40px;      
+html, body {     
     margin:0; /* remove default margin */
     padding:0; /* remove default padding */
     width:100%; /* take full browser width */
@@ -34,60 +33,37 @@ h2 {
 }
 
 
-#library {
-	display: flex;
-	justify-content:  center;
-	flex-wrap: wrap;
-
+#gameboard {
+	border: solid black 2px;
+	display:  flex;
+	flex-direction: column;
 }
 
-.book-div {
-	border-radius: 10px;
-	padding:  5px;
-	flex: 0 1 auto;
-	background-color: lightblue;
-	text-align: left;
-	margin:  10px;
-	min-width:  75px;
-
+.row {
+	border: solid blue 1px;
+	display:  flex;
+	flex-wrap: nowrap;
+	height:  100px;
+	flex-direction: row;
 }
 
-.read-button, .delete-button {
-	font-weight: bold;
-	text-align: center;
-	font-size: 20px;
-}
-
-
-.read-button {
-	font-size: 16px;
-	padding:  5px;
-}
-
-.delete-button {
-	background-color: lightpink;
-	border-radius: 0 0 10px 10px ;
-}
-
-.delete-button:hover {
-	background-color: red;
-	color:  white;
-	cursor: pointer;
-}
-
-.read-button:hover {
-	cursor: pointer;
-	color: green;
-}
-
-.read {
-	background-color: lightgreen;
-}
-.unread {
-	background-color: #FDFF93;
+.square {
+	border: solid black 1px;
+	font-size: 60px;
+	flex: 1 1 auto;
+	display:  flex;
+	justify-content: center;
+	align-items: center;
+	background-color:  white;
+	width:  100px;  /* Need to set this so it doesn't expand to accomodate "X" and "O" text */
 }
 
 
+
+.square:hover {
+	cursor:  pointer;
+	background-color:  yellow;
+}
 
 
 
